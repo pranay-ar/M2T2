@@ -2,7 +2,7 @@ h5py
 hydra-core
 matplotlib
 meshcat
-numpy
+numpy==1.26.4
 scikit-learn
 scipy
 tensorboard

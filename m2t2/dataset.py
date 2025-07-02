@@ -28,8 +28,12 @@ def load_rgb_xyz(
 ):
     with open(f'{data_dir}/meta_data.pkl', 'rb') as f:
         meta_data = pickle.load(f)
+    img = Image.open(f'{data_dir}/rgb.png')
+    img.save(f'{data_dir}/rgb.png', quality=95, subsampling=0)
     rgb = normalize_rgb(Image.open(f'{data_dir}/rgb.png')).permute(1, 2, 0)
     depth = np.load(f'{data_dir}/depth.npy')
+    print("Range of depth:", np.min(depth), np.max(depth))
+    print("Type of depth:", depth.dtype)
     xyz = torch.from_numpy(
         depth_to_xyz(depth, meta_data['intrinsics'])
     ).float()

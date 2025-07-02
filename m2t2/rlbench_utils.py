@@ -27,6 +27,7 @@ def load_image(episode_dir, camera, meta_data, frame_id):
     depth = np.array(
         Image.open(f"{episode_dir}/{camera}_depth/{frame_id}.png")
     )
+    print("Ranges of depth:", np.min(depth), np.max(depth))
     depth = np.sum(depth * [65536, 256, 1], axis=2)
     near = meta_data[f'{camera}_camera_near']
     far = meta_data[f'{camera}_camera_far']
@@ -65,3 +66,10 @@ def gripper_pose_to_rlbench(pose, gripper_depth=0.1034):
     pose_out[:3, 3] += gripper_depth * pose[:3, 2]
     pose_out = pose_out @ tra.euler_matrix(0, 0, -np.pi / 2)
     return pose_out
+
+
+def get_point_cloud(depth, intrinsics, cam_pose=None):
+    pcd = depth_to_xyz(depth, intrinsics)
+    if cam_pose is not None:
+        pcd = pcd @ cam_pose[:3, :3].T + cam_pose[:3, 3]
+    return pcd
